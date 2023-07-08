@@ -1,8 +1,8 @@
 # booking
 
-## booking api env keys
+## booking API env keys
 
-PORT
-MONGO_URL
-SEC_KEY
-JWT_KEY
+  PORT
+  MONGO_URL
+  SEC_KEY
+  JWT_KEY
