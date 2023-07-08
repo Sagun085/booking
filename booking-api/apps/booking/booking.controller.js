@@ -2,9 +2,11 @@ const Booking = require("./booking.model.js");
 
 exports.createSlot = async (req, res) => {
   const bookingData = {
-    user: req.body.user,
-    startTime: req.body.startTime,
-    endTime: req.body.endTime,
+    user: req.user._id,
+    bookingDate: req.body.bookingDate,
+    bookingType: req.body.bookingType,
+    bookingSlot: req.body.bookingSlot,
+    bookingTime: req.body.bookingTime,
   };
 
   const newBooking = new Booking(bookingData);
@@ -23,7 +25,9 @@ exports.createSlot = async (req, res) => {
 };
 
 exports.getAllBookedSlots = async (req, res) => {
-  Booking.find({})
+  Booking.find({
+    user: req.user._id,
+  })
     .then((data) => {
       res.send(data);
     })
