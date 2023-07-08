@@ -1,13 +1,15 @@
 const Booking = require("./booking.model.js");
 
 exports.createSlot = async (req, res) => {
+  console.log(req.user._id);
   const bookingData = {
     user: req.user._id,
     bookingDate: req.body.bookingDate,
     bookingType: req.body.bookingType,
-    bookingSlot: req.body.bookingSlot,
-    bookingTime: req.body.bookingTime,
   };
+  
+  if (req.body.bookingSlot) bookingData.bookingSlot = req.body.bookingSlot;
+  if (req.body.bookingTime) bookingData.bookingTime = req.body.bookingTime;
 
   const newBooking = new Booking(bookingData);
 

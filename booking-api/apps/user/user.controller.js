@@ -30,7 +30,7 @@ exports.createUser = async (req, res) => {
     })
     .catch((err) => {
       if (err.code === 11000) {
-        return res.status(400).send({
+        return res.status(409).send({
           message: `"${userData.email}" already exists`,
         });
       }
@@ -41,28 +41,26 @@ exports.createUser = async (req, res) => {
 };
 
 exports.login = (req, res) => {
-  Login.find({ email: req.body.email })
+  User.find({ email: req.body.email })
     .then((data) => {
       if (!data) {
         return res.status(404).send({
-          message: "Wrong UserId or Password!",
+          message: "Email not registered",
         });
       }
-      const userData = { ...data[0] };
+      const userData = { ...data[0]._doc };
       bcrypt.compare(req.body.password, userData.hash, function (err, resp) {
         if (resp) {
-          let key = process.env.JWT_KEY;
+          const key = process.env.JWT_KEY;
+          delete userData.hash;
+
           let token = jwt.sign({ data: JSON.stringify(userData) }, key, {
             expiresIn: "7d",
           });
-          delete userData.hash;
 
-          req.session.authenticated = true;
-          req.session.data = token;
-          req.session.save();
-
-          res.send({ data: userData });
+          res.send({ data: userData, token });
         } else {
+
           return res.status(404).send({
             message: "Wrong UserId or Password!",
           });
@@ -90,9 +88,11 @@ exports.logout = (req, res) => {
 // Retrieve and return all data from the database.
 exports.varifyToken = (req, res) => {
   const key = process.env.JWT_KEY;
-  jwt.verify(req.session.data, key, function (err, decoded) {
+  const authToken = req.headers.authorization;
+
+  jwt.verify(authToken, key, function (err, decoded) {
     if (err) {
-      res.status(401).send({
+      res.status(440).send({
         message: "Sesson expired.",
         error: err,
       });

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Booking = mongoose.Schema(
+const BookingSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -37,7 +37,7 @@ const Booking = mongoose.Schema(
   }
 );
 
-Booking.pre("save", function (next) {
+BookingSchema.pre("save", function (next) {
   const query = {
     bookingDate: this.bookingDate,
     _id: { $ne: this._id },
@@ -99,4 +99,6 @@ Booking.pre("save", function (next) {
     });
 });
 
-module.exports = mongoose.model("Booking", Booking);
+const Booking = mongoose.model('Booking', BookingSchema);
+
+module.exports = Booking

@@ -7,5 +7,6 @@ module.exports = (app) => {
 
     // logout
     app.get('/logout', user.logout);
+    app.get('/varify', user.varifyToken);
 
 }

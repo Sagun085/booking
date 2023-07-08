@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 exports.authenticate = function (req, res, next) {
-  const token = req.session.token;
+  const token = req.headers.authorization;
   const key = process.env.JWT_KEY;
   if (!token) {
     return res.status(401).json({ error: 'Missing token' });
@@ -11,7 +11,7 @@ exports.authenticate = function (req, res, next) {
     if (err) {
       return res.status(403).json({ error: 'Invalid token' });
     }
-    req.user = user;
+    req.user = JSON.parse(user.data);
     next();
   });
 }
