@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { BookingService } from '../services/booking.service';
 import { MatDialog } from '@angular/material/dialog';
 import { BookingDialogComponent } from '../booking-dialog/booking-dialog.component';
+import { SnackbarService } from '../services/snackbar.service';
 
 export interface Booking {
   bookingDate: string;
@@ -24,13 +25,15 @@ export class BookingComponent {
     'bookingType',
     'bookingSlot',
     'bookingTime',
+    'action',
   ];
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private bookingService: BookingService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackbarService: SnackbarService
   ) {}
 
   openDialog(): void {
@@ -66,6 +69,20 @@ export class BookingComponent {
       })
       .catch((err) => {
         console.error(err);
+      });
+  }
+
+  deleteBooking(id: string) {
+    this.bookingService
+      .deleteBooking(id)
+      .then((resp) => {
+        this.fetchBookings();
+      })
+      .catch((error) => {
+        this.snackbarService.showError(
+          error?.error?.message || 'Some error occured'
+        );
+        console.error(error);
       });
   }
 }

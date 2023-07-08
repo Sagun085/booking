@@ -17,7 +17,13 @@ export class BookingService {
 
   createBooking(bookingData: any) {
     return firstValueFrom(
-      this.http.post<any[]>(`${this.authService.baseUrl}/booking`, bookingData)
+      this.http.post<any>(`${this.authService.baseUrl}/booking`, bookingData)
+    );
+  }
+
+  deleteBooking(id: string) {
+    return firstValueFrom(
+      this.http.delete<any>(`${this.authService.baseUrl}/booking/${id}`)
     );
   }
 }

@@ -23,16 +23,17 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    
     if (this.isExcludedUrl(request.url)) {
       return next.handle(request);
     }
 
     const token = localStorage.getItem('sessionToken');
+    const currentRoute = this.router.url;
 
     if (!token) {
-      console.log(this.route.snapshot.url)
-      // this.router.navigate(['/login']);
+      if (this.excludedUrls.includes(currentRoute)) {
+        this.router.navigate([currentRoute]);
+      }
       return throwError(
         () =>
           new HttpErrorResponse({ error: 'No token available', status: 401 })

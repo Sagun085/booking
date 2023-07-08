@@ -1,17 +1,19 @@
+<mat-toolbar color="primary">
+  <span>Booking List</span>
+  <span class="spacer"></span>
+  <button mat-flat-button color="primary" (click)="logout()">Logout</button>
+  <button mat-flat-button color="primary" (click)="openDialog()">
+    Add Booking
+  </button>
+</mat-toolbar>
+
 <div class="container">
-  <h2>Bookings</h2>
-
-  <button mat-raised-button color="primary" (click)="logout()">
-    Logout
-  </button>
-  <button mat-raised-button color="primary" (click)="openDialog()">
-    Open Dialog
-  </button>
-
   <mat-table [dataSource]="bookings" class="mat-elevation-z8">
     <ng-container matColumnDef="bookingDate">
       <mat-header-cell *matHeaderCellDef> Booking Date </mat-header-cell>
-      <mat-cell *matCellDef="let booking"> {{ booking.bookingDate | date }} </mat-cell>
+      <mat-cell *matCellDef="let booking">
+        {{ booking.bookingDate | date }}
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="bookingType">
@@ -21,12 +23,25 @@
 
     <ng-container matColumnDef="bookingSlot">
       <mat-header-cell *matHeaderCellDef> Booking Slot </mat-header-cell>
-      <mat-cell *matCellDef="let booking"> {{ booking.bookingSlot || "N/A" }} </mat-cell>
+      <mat-cell *matCellDef="let booking">
+        {{ booking.bookingSlot || "N/A" }}
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="bookingTime">
       <mat-header-cell *matHeaderCellDef> Booking Time </mat-header-cell>
-      <mat-cell *matCellDef="let booking"> {{ booking.bookingTime || "N/A" }} </mat-cell>
+      <mat-cell *matCellDef="let booking">
+        {{ booking.bookingTime || "N/A" }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+      <mat-cell *matCellDef="let booking">
+        <button color="warn" mat-icon-button (click)="deleteBooking(booking._id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
