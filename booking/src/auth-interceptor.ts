@@ -7,13 +7,13 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private excludedUrls = ['/login', '/register'];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   private isExcludedUrl(url: string): boolean {
     return this.excludedUrls.some((excludedUrl) => url.includes(excludedUrl));
@@ -31,7 +31,8 @@ export class AuthInterceptor implements HttpInterceptor {
     const token = localStorage.getItem('sessionToken');
 
     if (!token) {
-      this.router.navigate(['/login']);
+      console.log(this.route.snapshot.url)
+      // this.router.navigate(['/login']);
       return throwError(
         () =>
           new HttpErrorResponse({ error: 'No token available', status: 401 })

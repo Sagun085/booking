@@ -23,9 +23,9 @@ export class RegisterComponent {
 
   async ngOnInit(): Promise<void> {
     await this.authService.varifyToken();
-    if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/booking']);
-    }
+    // if (this.authService.isAuthenticated()) {
+    //   this.router.navigate(['/booking']);
+    // }
   }
 
   login() {

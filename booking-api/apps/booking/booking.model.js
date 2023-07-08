@@ -40,52 +40,21 @@ const BookingSchema = mongoose.Schema(
 BookingSchema.pre("save", function (next) {
   const query = {
     bookingDate: this.bookingDate,
-    _id: { $ne: this._id },
   };
-
-  if (this.bookingType === "Full Day") {
-    query.bookingType = "Full Day";
-  } else if (this.bookingType === "Half Day") {
-    query.bookingSlot = this.bookingSlot;
-  } else if (this.bookingType === "Custom") {
-    query.bookingTime = this.bookingTime;
-  }
 
   Booking.find(query)
     .then((existingBookings) => {
+      if (this.bookingType === "Full Day" && existingBookings.length) {
+        throw new Error("Full Day booking not possible for the day");
+      }
       const overlap = existingBookings.some((existingBooking) => {
-        if (this.bookingType === "Full Day") {
-          return existingBooking.bookingType === "Full Day";
-        } else if (
-          this.bookingType === "Half Day" &&
-          existingBooking.bookingType === "Half Day"
-        ) {
-          return existingBooking.bookingSlot === this.bookingSlot;
-        } else if (
-          this.bookingType === "Custom" &&
-          existingBooking.bookingType === "Custom"
-        ) {
-          return existingBooking.bookingTime === this.bookingTime;
-        } else if (
-          this.bookingType === "Half Day" &&
-          existingBooking.bookingType === "Custom"
-        ) {
-          return (
-            existingBooking.bookingTime === this.bookingTime &&
-            (existingBooking.bookingSlot === "First Half" ||
-              existingBooking.bookingSlot === "Second Half")
-          );
-        } else if (
-          this.bookingType === "Custom" &&
-          existingBooking.bookingType === "Half Day"
-        ) {
-          return (
-            existingBooking.bookingSlot === this.bookingSlot &&
-            (this.bookingTime === "First Half" ||
-              this.bookingTime === "Second Half")
-          );
+        if (existingBooking.bookingType === "Full Day") {
+          return true;
+        } else if (this.bookingType === "Half Day") {
+          return existingBooking.bookingSlot === this.bookingSlot
+        } else if (this.bookingType === "Custom") {
+          return existingBooking.bookingTime === this.bookingTime
         }
-
         return false;
       });
 
@@ -99,6 +68,6 @@ BookingSchema.pre("save", function (next) {
     });
 });
 
-const Booking = mongoose.model('Booking', BookingSchema);
+const Booking = mongoose.model("Booking", BookingSchema);
 
-module.exports = Booking
+module.exports = Booking;
