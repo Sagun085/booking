@@ -54,7 +54,8 @@ exports.getBookingById = async (req, res) => {
 };
 
 exports.deleteBookedSlotById = async (req, res) => {
-  Booking.findById(req.params.bookingId)
+  const bookingId = req.params.bookingId;
+  Booking.findById(bookingId)
     .then((booking) => {
       if (!booking) {
         return res.status(404).json({ error: "Booking not found" });
