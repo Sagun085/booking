@@ -23,11 +23,13 @@ const BookingSchema = mongoose.Schema(
         return this.bookingType === "Half Day";
       },
     },
-    bookingTime: {
-      type: String,
-      required: function () {
-        return this.bookingType === "Custom";
-      },
+    bookingFromTime: {
+      type: Date,
+      required: true,
+    },
+    bookingToTime: {
+      type: Date,
+      required: true,
     },
   },
   {
@@ -51,9 +53,9 @@ BookingSchema.pre("save", function (next) {
         if (existingBooking.bookingType === "Full Day") {
           return true;
         } else if (this.bookingType === "Half Day") {
-          return existingBooking.bookingSlot === this.bookingSlot
+          return existingBooking.bookingSlot === this.bookingSlot;
         } else if (this.bookingType === "Custom") {
-          return existingBooking.bookingTime === this.bookingTime
+          return existingBooking.bookingTime === this.bookingTime;
         }
         return false;
       });

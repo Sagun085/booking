@@ -33,6 +33,8 @@ export class AuthInterceptor implements HttpInterceptor {
     if (!token) {
       if (this.excludedUrls.includes(currentRoute)) {
         this.router.navigate([currentRoute]);
+      } else {
+        this.router.navigate(['/login']);
       }
       return throwError(
         () =>

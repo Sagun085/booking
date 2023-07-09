@@ -11,3 +11,16 @@ body {
 .spacer {
   flex: 1 1 auto;
 }
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-card {
+  width: 40vw;
+  margin: 2em auto;
+  text-align: center;
+}
