@@ -1,7 +1,7 @@
 <div class="login-container">
-  <mat-card class="login-card">
-    <form (ngSubmit)="login()" #loginForm="ngForm">
-      <mat-card-header>
+  <form (ngSubmit)="login()" #loginForm="ngForm">
+    <mat-card class="login-card">
+      <mat-card-header [ngStyle]="{ 'padding-bottom': '12px' }">
         <mat-card-title>Login</mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -39,7 +39,12 @@
           </mat-error>
         </mat-form-field>
       </mat-card-content>
-      <mat-card-actions>
+      <mat-card-actions align="end">
+        <span>
+          Don't have an account
+          <a href="javascript:void(0)" (click)="(register())">Register Here</a>
+        </span>
+        <span class="spacer"></span>
         <button
           mat-raised-button
           color="primary"
@@ -48,15 +53,7 @@
         >
           Login
         </button>
-        <button
-          (click)="register()"
-          mat-raised-button
-          color="primary"
-          type="button"
-        >
-          Register
-        </button>
       </mat-card-actions>
-    </form>
-  </mat-card>
+    </mat-card>
+  </form>
 </div>

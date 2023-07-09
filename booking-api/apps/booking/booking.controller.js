@@ -6,10 +6,11 @@ exports.createSlot = async (req, res) => {
     user: req.user._id,
     bookingDate: req.body.bookingDate,
     bookingType: req.body.bookingType,
+    bookingFromTime: req.body.bookingFromTime,
+    bookingToTime: req.body.bookingToTime,
   };
 
   if (req.body.bookingSlot) bookingData.bookingSlot = req.body.bookingSlot;
-  if (req.body.bookingTime) bookingData.bookingTime = req.body.bookingTime;
 
   const newBooking = new Booking(bookingData);
 
@@ -53,7 +54,8 @@ exports.getBookingById = async (req, res) => {
 };
 
 exports.deleteBookedSlotById = async (req, res) => {
-  Booking.findById(req.params.bookingId)
+  const bookingId = req.params.bookingId;
+  Booking.findById(bookingId)
     .then((booking) => {
       if (!booking) {
         return res.status(404).json({ error: "Booking not found" });

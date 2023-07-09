@@ -11,7 +11,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  private excludedUrls = ['/login', '/register'];
+  private excludedUrls = ['/login', '/register', '/signup'];
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
@@ -33,6 +33,8 @@ export class AuthInterceptor implements HttpInterceptor {
     if (!token) {
       if (this.excludedUrls.includes(currentRoute)) {
         this.router.navigate([currentRoute]);
+      } else {
+        this.router.navigate(['/login']);
       }
       return throwError(
         () =>

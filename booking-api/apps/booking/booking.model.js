@@ -23,11 +23,13 @@ const BookingSchema = mongoose.Schema(
         return this.bookingType === "Half Day";
       },
     },
-    bookingTime: {
-      type: String,
-      required: function () {
-        return this.bookingType === "Custom";
-      },
+    bookingFromTime: {
+      type: Date,
+      required: true,
+    },
+    bookingToTime: {
+      type: Date,
+      required: true,
     },
   },
   {
@@ -42,18 +44,39 @@ BookingSchema.pre("save", function (next) {
     bookingDate: this.bookingDate,
   };
 
+  function isDateBetween(start, end, date) {
+    return start < date && end > date;
+  }
+
   Booking.find(query)
     .then((existingBookings) => {
       if (this.bookingType === "Full Day" && existingBookings.length) {
         throw new Error("Full Day booking not possible for the day");
       }
       const overlap = existingBookings.some((existingBooking) => {
+        const start = existingBooking.bookingFromTime;
+        const end = existingBooking.bookingToTime;
+
         if (existingBooking.bookingType === "Full Day") {
           return true;
         } else if (this.bookingType === "Half Day") {
-          return existingBooking.bookingSlot === this.bookingSlot
+          console.log(existingBooking.bookingSlot === this.bookingSlot);
+          console.log(isDateBetween(start, end, this.bookingFromTime));
+          console.log(isDateBetween(start, end, this.bookingToTime));
+          return (
+            existingBooking.bookingSlot === this.bookingSlot ||
+            isDateBetween(start, end, this.bookingFromTime) ||
+            isDateBetween(start, end, this.bookingToTime) ||
+            isDateBetween(this.bookingFromTime, this.bookingToTime, start) ||
+            isDateBetween(this.bookingFromTime, this.bookingToTime, end)
+          );
         } else if (this.bookingType === "Custom") {
-          return existingBooking.bookingTime === this.bookingTime
+          return (
+            isDateBetween(start, end, this.bookingFromTime) ||
+            isDateBetween(start, end, this.bookingToTime) ||
+            isDateBetween(this.bookingFromTime, this.bookingToTime, start) ||
+            isDateBetween(this.bookingFromTime, this.bookingToTime, end)
+          );
         }
         return false;
       });

@@ -30,6 +30,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatCardModule,
     MatFormFieldModule,
     MatSnackBarModule,
-    MatToolbarModule
+    MatToolbarModule,
+    NgxMaterialTimepickerModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

@@ -28,17 +28,28 @@
       </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="bookingTime">
-      <mat-header-cell *matHeaderCellDef> Booking Time </mat-header-cell>
+    <ng-container matColumnDef="bookingFromTime">
+      <mat-header-cell *matHeaderCellDef> Booking From </mat-header-cell>
       <mat-cell *matCellDef="let booking">
-        {{ booking.bookingTime || "N/A" }}
+        {{ getTimeFromDate(booking.bookingFromTime) || "N/A" }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="bookingToTime">
+      <mat-header-cell *matHeaderCellDef> Booking To </mat-header-cell>
+      <mat-cell *matCellDef="let booking">
+        {{ getTimeFromDate(booking.bookingToTime) || "N/A" }}
       </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="action">
       <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
       <mat-cell *matCellDef="let booking">
-        <button color="warn" mat-icon-button (click)="deleteBooking(booking._id)">
+        <button
+          color="warn"
+          mat-icon-button
+          (click)="deleteBooking(booking._id)"
+        >
           <mat-icon>delete</mat-icon>
         </button>
       </mat-cell>
