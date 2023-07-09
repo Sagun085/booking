@@ -61,24 +61,35 @@
       </mat-form-field>
     </div>
 
-    <div *ngIf="bookingForm.get('bookingType')?.value === 'Custom'">
-      <mat-form-field>
-        <input
-          matInput
-          type="time"
-          placeholder="Booking Time"
-          formControlName="bookingTime"
-        />
-        <mat-error
-          *ngIf="
-            bookingForm.get('bookingTime')?.invalid &&
-            bookingForm.get('bookingTime')?.touched
-          "
-        >
-          Booking Time is required
-        </mat-error>
-      </mat-form-field>
-    </div>
+    <mat-form-field>
+      <input
+        placeholder="Booking From Time"
+        [disableClick]="bookingForm.get('bookingType')?.value !== 'Custom'"
+        [readonly]="bookingForm.get('bookingType')?.value !== 'Custom'"
+        matInput
+        [ngxTimepicker]="bookingFromTime"
+        formControlName="bookingFromTime"
+        [format]="24"
+        min="9:00 am"
+        max="5:00 pm"
+      />
+      <ngx-material-timepicker #bookingFromTime></ngx-material-timepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        placeholder="Booking To Time"
+        [disableClick]="bookingForm.get('bookingType')?.value !== 'Custom'"
+        [readonly]="bookingForm.get('bookingType')?.value !== 'Custom'"
+        matInput
+        [ngxTimepicker]="bookingToTime"
+        formControlName="bookingToTime"
+        [format]="24"
+        min="9:00 am"
+        max="5:00 pm"
+      />
+      <ngx-material-timepicker #bookingToTime></ngx-material-timepicker>
+    </mat-form-field>
   </form>
 </div>
 <div mat-dialog-actions align="end">

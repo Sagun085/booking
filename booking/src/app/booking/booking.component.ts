@@ -5,6 +5,7 @@ import { BookingService } from '../services/booking.service';
 import { MatDialog } from '@angular/material/dialog';
 import { BookingDialogComponent } from '../booking-dialog/booking-dialog.component';
 import { SnackbarService } from '../services/snackbar.service';
+import { DateTime } from 'luxon';
 
 export interface Booking {
   bookingDate: string;
@@ -24,7 +25,8 @@ export class BookingComponent {
     'bookingDate',
     'bookingType',
     'bookingSlot',
-    'bookingTime',
+    'bookingFromTime',
+    'bookingToTime',
     'action',
   ];
 
@@ -46,6 +48,11 @@ export class BookingComponent {
         this.fetchBookings();
       }
     });
+  }
+
+  getTimeFromDate(date: any) {
+    const _date = DateTime.fromISO(date)
+    return _date.toFormat("hh:mm a")
   }
 
   async ngOnInit(): Promise<void> {

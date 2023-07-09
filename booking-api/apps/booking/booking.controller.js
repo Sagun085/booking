@@ -6,10 +6,11 @@ exports.createSlot = async (req, res) => {
     user: req.user._id,
     bookingDate: req.body.bookingDate,
     bookingType: req.body.bookingType,
+    bookingFromTime: req.body.bookingFromTime,
+    bookingToTime: req.body.bookingToTime,
   };
 
   if (req.body.bookingSlot) bookingData.bookingSlot = req.body.bookingSlot;
-  if (req.body.bookingTime) bookingData.bookingTime = req.body.bookingTime;
 
   const newBooking = new Booking(bookingData);
 

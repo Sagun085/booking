@@ -24,3 +24,11 @@ body {
   margin: 2em auto;
   text-align: center;
 }
+
+.timepicker-backdrop-overlay {
+  z-index: 10000 !important;
+}
+
+.timepicker-overlay {
+  z-index: 10010 !important;
+}
