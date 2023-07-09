@@ -46,6 +46,8 @@ export class BookingDialogComponent implements OnInit {
       bookingTypeControl.valueChanges.subscribe((value: string) => {
         this.setTime(null, null);
         const bookingSlotControl = this.bookingForm.get('bookingSlot');
+        bookingSlotControl?.setValue(null);
+        
         if (bookingSlotControl) {
           if (value === 'Full Day') {
             this.setTime('09:00', '17:00');
