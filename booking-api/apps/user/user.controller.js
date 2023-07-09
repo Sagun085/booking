@@ -1,6 +1,6 @@
 const User = require("./user.model.js");
 const bcrypt = require("bcrypt");
-let jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 exports.createUser = async (req, res) => {
   const userData = {
@@ -9,16 +9,13 @@ exports.createUser = async (req, res) => {
     email: req.body.email,
   };
 
-  bcrypt.hash(pass, 10, function (err, hash) {
-    if (hash) {
-      userData.hash = hash;
-    }
-    if (err) {
-      res.status(400).send({
-        message: "Some error occurred while creating the User.",
-      });
-    }
-  });
+  try {
+    userData.hash = await createHash(req.body.password);
+  } catch (error) {
+    res.status(400).send({
+      message: error.message,
+    });
+  }
 
   // Create a Note
   const newUser = new User(userData);
@@ -26,9 +23,17 @@ exports.createUser = async (req, res) => {
   newUser
     .save()
     .then((data) => {
-      res.send(data);
+      const user = { ...data._doc };
+      delete user.hash;
+      delete user._id;
+      res.send(user);
     })
     .catch((err) => {
+      if (err.code === 11000) {
+        return res.status(409).send({
+          message: `"${userData.email}" already exists`,
+        });
+      }
       res.status(400).send({
         message: err.message || "Some error occurred while creating the User.",
       });
@@ -36,27 +41,26 @@ exports.createUser = async (req, res) => {
 };
 
 exports.login = (req, res) => {
-  Login.find({ email: req.body.email })
+  User.find({ email: req.body.email })
     .then((data) => {
       if (!data) {
         return res.status(404).send({
-          message: "Wrong UserId or Password!",
+          message: "Email not registered",
         });
       }
-      const userData = {...data[0]}
+      const userData = { ...data[0]._doc };
       bcrypt.compare(req.body.password, userData.hash, function (err, resp) {
         if (resp) {
-          let key = process.env.JWT_KEY;
-          let token = jwt.sign({ data: JSON.stringify(userData) }, key, { expiresIn: '7d' });
-          delete userData.hash
-          
-          req.session.authenticated = true;
-          req.session.data = token;
-          req.session.save();
+          const key = process.env.JWT_KEY;
+          delete userData.hash;
 
-          res.send({ data: userData });
-          
+          let token = jwt.sign({ data: JSON.stringify(userData) }, key, {
+            expiresIn: "7d",
+          });
+
+          res.send({ data: userData, token });
         } else {
+
           return res.status(404).send({
             message: "Wrong UserId or Password!",
           });
@@ -84,9 +88,11 @@ exports.logout = (req, res) => {
 // Retrieve and return all data from the database.
 exports.varifyToken = (req, res) => {
   const key = process.env.JWT_KEY;
-  jwt.verify(req.session.data, key, function (err, decoded) {
+  const authToken = req.headers.authorization;
+
+  jwt.verify(authToken, key, function (err, decoded) {
     if (err) {
-      res.status(401).send({
+      res.status(440).send({
         message: "Sesson expired.",
         error: err,
       });
@@ -95,3 +101,18 @@ exports.varifyToken = (req, res) => {
     }
   });
 };
+
+function createHash(password) {
+  return new Promise((resolve, reject) => {
+    bcrypt.hash(password, 10, function (err, hash) {
+      if (hash) {
+        resolve(hash);
+      }
+      if (err) {
+        reject({
+          message: "Some error occurred while creating the User.",
+        });
+      }
+    });
+  });
+}

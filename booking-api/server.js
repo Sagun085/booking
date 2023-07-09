@@ -8,6 +8,7 @@ const dotenv = require('dotenv').config()
 const bookingApi = express();
 
 // parse requests of content-type - application/json
+bookingApi.use(bodyParser.urlencoded({ extended: true }));
 bookingApi.use(bodyParser.json());
 
 // for session
@@ -25,7 +26,6 @@ mongoose.Promise = global.Promise;
 
 // Connecting to the database
 const mongoUrl = process.env.MONGO_URL;
-console.log(mongoUrl)
 mongoose
   .connect(mongoUrl, {
     useNewUrlParser: true,
@@ -41,8 +41,9 @@ mongoose
 
 // require Routes
 require("./apps/user/user.routes.js")(bookingApi);
+require("./apps/booking/booking.routes.js")(bookingApi);
 
-const port = process.env.MONGOURL;
+const port = process.env.PORT;
 bookingApi.listen(port, () => {
-  console.log("Server is listening on port 3000");
+  console.log(`Server is listening on port ${port} `);
 });

@@ -1,0 +1,94 @@
+<h2 mat-dialog-title>Booking Dialog</h2>
+<div mat-dialog-content>
+  <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <input
+        matInput
+        [matDatepicker]="bookingDatepicker"
+        placeholder="Booking Date"
+        formControlName="bookingDate"
+        required
+        [min]="minDate"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="bookingDatepicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #bookingDatepicker></mat-datepicker>
+      <mat-error
+        *ngIf="
+          bookingForm.get('bookingDate')?.invalid &&
+          bookingForm.get('bookingDate')?.touched
+        "
+      >
+        Booking Date is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Booking Type</mat-label>
+      <mat-select formControlName="bookingType" required>
+        <mat-option *ngFor="let type of bookingTypes" [value]="type">{{
+          type
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          bookingForm.get('bookingType')?.invalid &&
+          bookingForm.get('bookingType')?.touched
+        "
+      >
+        Booking Type is required
+      </mat-error>
+    </mat-form-field>
+
+    <div *ngIf="bookingForm.get('bookingType')?.value === 'Half Day'">
+      <mat-form-field>
+        <mat-label>Booking Slot</mat-label>
+        <mat-select formControlName="bookingSlot">
+          <mat-option value="">Select</mat-option>
+          <mat-option value="First Half">First Half</mat-option>
+          <mat-option value="Second Half">Second Half</mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="
+            bookingForm.get('bookingSlot')?.invalid &&
+            bookingForm.get('bookingSlot')?.touched
+          "
+        >
+          Booking Slot is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="bookingForm.get('bookingType')?.value === 'Custom'">
+      <mat-form-field>
+        <input
+          matInput
+          type="time"
+          placeholder="Booking Time"
+          formControlName="bookingTime"
+        />
+        <mat-error
+          *ngIf="
+            bookingForm.get('bookingTime')?.invalid &&
+            bookingForm.get('bookingTime')?.touched
+          "
+        >
+          Booking Time is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button
+    mat-button
+    color="primary"
+    [disabled]="bookingForm.invalid"
+    (click)="onSubmit()"
+  >
+    Book
+  </button>
+</div>
